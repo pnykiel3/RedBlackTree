@@ -64,5 +64,44 @@ class RBTree:
 
     def fix(self, node):
 
-        while node != self.root and node.parent.color
+        while node != self.root and node.parent.color == 'red':
+            grandparent = node.grandparent
+            if node.parent == grandparent.left:
+                uncle = grandparent.right
+                # Case 1: Uncle is red
+                if uncle.color == 'red':
+                    node.parent.color = 'black'
+                    uncle.color = 'black'
+                    grandparent.color = 'red'
+                    node = grandparent
+                else:
+                # Case 2: Node is a right child
+                    if node == node.parent.right:
+                        node = node.parent
+                        self.left_rotate(node)
+                # Case 3: Node is a left child
+                    node.parent.color = 'black'
+                    grandparent.color = 'red'
+                    self.right_rotate(grandparent)
+            else:
+                uncle = grandparent.left
+                if uncle.color == 'red':
+                    node.parent.color = 'black'
+                    uncle.color = 'black'
+                    grandparent.color = 'red'
+                    node = grandparent
+                else:
+
+
+
+
+
+    def right_rotate(self, node):
+        pass
+
+    def left_rotate(self, node):
+        pass
+
+
+
 
