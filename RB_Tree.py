@@ -136,5 +136,79 @@ class RBTree:
         node.parent = old_right
 
 
+    def search(self, value):
+        current = self.root
+        while current:
+            if current.value == value:
+                return current
+            elif current.value < value:
+                current = current.left
+            else:
+                current = current.right
+        return None
 
+
+    def minimum(self, node = None):
+        if node is None:
+            node = self.root
+        while node.left:
+            node = node.left
+        return node
+
+
+    def maximum(self, node = None):
+        if node is None:
+            node = self.root
+        while node.right:
+            node = node.right
+        return node
+
+
+    def height(self, node = None):
+        if node is None:
+            node = self.root
+        if node is None:
+            # Height of an empty tree
+            return -1
+        left_height = self.height(node.left)
+        right_height = self.height(node.right)
+        return max(left_height, right_height) + 1
+
+    def count_nodes(self, node = None):
+        if node is None:
+            node = self.root
+        if node is None:
+            # Number of nodes in an empty tree
+            return 0
+        return 1 + self.count_nodes(node.left) + self.count_nodes(node.right)
+
+
+    def clear(self):
+        self.root = None
+
+
+    def successor(self, node):
+        if node.right:
+            return self.minimum(node)
+
+
+
+    def predecessor(self, node):
+
+
+
+    def visualize(self):
+        pass
+
+
+    def preorder(self):
+        pass
+
+
+    def postorder(self):
+        pass
+
+
+    def inorder(self):
+        pass
 
