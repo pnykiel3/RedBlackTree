@@ -66,6 +66,7 @@ class RBTree:
 
         while node != self.root and node.parent.color == 'red':
             grandparent = node.grandparent
+            # Left side cases
             if node.parent == grandparent.left:
                 uncle = grandparent.right
                 # Case 1: Uncle is red
@@ -74,8 +75,7 @@ class RBTree:
                     uncle.color = 'black'
                     grandparent.color = 'red'
                     node = grandparent
-                else:
-                # Case 2: Node is a right child
+                else:    # Case 2: Node is a right child
                     if node == node.parent.right:
                         node = node.parent
                         self.left_rotate(node)
@@ -83,24 +83,57 @@ class RBTree:
                     node.parent.color = 'black'
                     grandparent.color = 'red'
                     self.right_rotate(grandparent)
-            else:
+            else:    # Right side cases
                 uncle = grandparent.left
+                # Case 1: Uncle is red
                 if uncle.color == 'red':
                     node.parent.color = 'black'
                     uncle.color = 'black'
                     grandparent.color = 'red'
                     node = grandparent
+                # Case 2: Node is a left child
                 else:
+                    if node == node.parent.left:
+                        node = node.parent
+                        self.right_rotate(node)
+                    # Case 3: Node is a right child
+                    node.parent.color = 'black'
+                    grandparent.color = 'red'
+                    self.left_rotate(grandparent)
 
-
-
+        self.root.color = 'black'
 
 
     def right_rotate(self, node):
-        pass
+        old_left = node.left
+        node.left = old_left.right
+        if old_left.right:
+            old_left.right.parent = node
+        old_left.parent = node.parent
+        if node.parent is None:
+            self.root = old_left
+        elif node == node.parent.right:
+            node.parent.right = old_left
+        else:
+            node.parent.left = old_left
+        old_left.right = node
+        node.parent = old_left
+
 
     def left_rotate(self, node):
-        pass
+        old_right = node.right
+        node.left = old_right.left
+        if old_right.left:
+            old_right.left.parent = node
+        old_right.parent = node.parent
+        if node.parent is None:
+            self.root = old_right
+        elif node == node.parent.left:
+            node.parent.left = old_right
+        else:
+            node.parent.right = old_right
+        old_right.right = node
+        node.parent = old_right
 
 
 
