@@ -1,5 +1,5 @@
 import os
-import unittest
+
 from graphviz import Digraph
 
 
@@ -34,6 +34,7 @@ class RBTree:
     def __init__(self):
         self.root = None
 
+
     def insert(self, value):
         new = Node(value)
         if self.root is None:
@@ -45,7 +46,8 @@ class RBTree:
 
             # Only apply fix if the node was actually inserted (not a duplicate)
             if inserted:
-                self.fix(new)
+                self.fix_insert(new)
+        print(f"Inserted {value} into the tree.")
 
 
     def insert_node(self, old, new):
@@ -75,7 +77,7 @@ class RBTree:
                 return self.insert_node(old.right, new)
 
 
-    def fix(self, node):
+    def fix_insert(self, node):
         while node != self.root and node.parent.color == 'red':
             grandparent = node.grandparent()
             if node.parent == grandparent.left:
@@ -108,6 +110,102 @@ class RBTree:
                     self.left_rotate(grandparent)
         self.root.color = 'black'
 
+
+    def delete(self, value):
+        node = self.search(value)
+        if node is None:
+            print(f"Value {value} not found in the tree.")
+            return
+
+        # Perform standard BST deletion
+        self.delete_node(node)
+        print(f"Deleted {value} from the tree.")
+
+
+    def delete_node(self, node):
+        # Node to replace the current node
+        if node.left and node.right:
+            # Find the successor
+            successor = self.minimum(node.right)
+            node.value = successor.value
+            node = successor
+
+        child = node.left if node.left else node.right
+
+        # Remove node and replace it with child
+        if child:
+            self.replace_node(node, child)
+            if node.color == 'black':
+                self.fix_delete(child)
+        elif node.color == 'black':
+            # Fix double-black case
+            self.fix_delete(node)
+            self.replace_node(node, None)
+        else:
+            self.replace_node(node, None)
+
+
+    def replace_node(self, node, child):
+        if node.parent is None:
+            self.root = child
+        else:
+            if node == node.parent.left:
+                node.parent.left = child
+            else:
+                node.parent.right = child
+        if child:
+            child.parent = node.parent
+
+
+    def fix_delete(self, node):
+        while node != self.root and node.color == 'black':
+            if node == node.parent.left:
+                sibling = node.parent.right
+                if sibling.color == 'red':
+                    sibling.color = 'black'
+                    node.parent.color = 'red'
+                    self.left_rotate(node.parent)
+                    sibling = node.parent.right
+                if (not sibling.left or sibling.left.color == 'black') and \
+                        (not sibling.right or sibling.right.color == 'black'):
+                    sibling.color = 'red'
+                    node = node.parent
+                else:
+                    if not sibling.right or sibling.right.color == 'black':
+                        sibling.left.color = 'black'
+                        sibling.color = 'red'
+                        self.right_rotate(sibling)
+                        sibling = node.parent.right
+                    sibling.color = node.parent.color
+                    node.parent.color = 'black'
+                    sibling.right.color = 'black'
+                    self.left_rotate(node.parent)
+                    node = self.root
+            else:
+                sibling = node.parent.left
+                if sibling.color == 'red':
+                    sibling.color = 'black'
+                    node.parent.color = 'red'
+                    self.right_rotate(node.parent)
+                    sibling = node.parent.left
+                if (not sibling.left or sibling.left.color == 'black') and \
+                        (not sibling.right or sibling.right.color == 'black'):
+                    sibling.color = 'red'
+                    node = node.parent
+                else:
+                    if not sibling.left or sibling.left.color == 'black':
+                        sibling.right.color = 'black'
+                        sibling.color = 'red'
+                        self.left_rotate(sibling)
+                        sibling = node.parent.left
+                    sibling.color = node.parent.color
+                    node.parent.color = 'black'
+                    sibling.left.color = 'black'
+                    self.right_rotate(node.parent)
+                    node = self.root
+        node.color = 'black'
+
+
     def right_rotate(self, node):
         old_left = node.left
         node.left = old_left.right
@@ -122,6 +220,7 @@ class RBTree:
             node.parent.left = old_left
         old_left.right = node
         node.parent = old_left
+
 
     def left_rotate(self, node):
         old_right = node.right
@@ -138,6 +237,7 @@ class RBTree:
         old_right.left = node
         node.parent = old_right
 
+
     def search(self, value):
         """
         Search the tree for a node with the given value.
@@ -146,11 +246,13 @@ class RBTree:
         current = self.root  # Start from the root
         while current:
             if current.value == value:  # Node found
+                print(f"Value {value} found in the tree.")
                 return current
             elif value < current.value:  # Search in the left subtree
                 current = current.left
             else:  # Search in the right subtree
                 current = current.right
+        print(f"Value {value} not found in the tree.")
         return None  # Value not found in the tree
 
 
@@ -168,6 +270,7 @@ class RBTree:
         while node.right:
             node = node.right
         return node
+
 
     def height(self, node=None, _root_call=True):
         """
@@ -196,6 +299,7 @@ class RBTree:
         right_height = self.height(node.right, False)
         return max(left_height, right_height) + 1
 
+
     def count_nodes(self, node = None, _root_call=True):
         if _root_call and node is None:
             node = self.root  # Start from the root if no node is specified
@@ -214,6 +318,8 @@ class RBTree:
 
         remove_refs(self.root)
         self.root = None
+        print("Tree cleared.")
+
 
     def successor(self, node):
         """
@@ -267,7 +373,6 @@ class RBTree:
         print()
 
 
-
     def postorder(self):
         def traverse(node):
             if not node:
@@ -316,4 +421,56 @@ class RBTree:
             print(f"Unable to open the file: {e}")
 
 
+    def is_valid(self):
+        """
+        Validates whether the current tree satisfies Red-Black Tree properties.
+        Returns True if valid, False otherwise.
+        """
 
+
+        def check_properties(node):
+            """
+            Check if the tree rooted at the given node satisfies Red-Black Tree properties:
+            1. A node is either red or black.
+            2. The root is always black.
+            3. Red nodes must have black children (no two consecutive red nodes).
+            4. Every path from a node to its descendant NULL nodes must have the same number of black nodes.
+    
+            Args:
+                node (Node): The current node to validate.
+    
+            Returns:
+                (int, bool): A tuple containing the black height of the subtree and a boolean indicating
+                whether the subtree is valid.
+            """
+            if node is None:  # Base case: Every NULL leaf has black height 1
+                return 1, True
+    
+            left_black_height, left_valid = check_properties(node.left)
+            right_black_height, right_valid = check_properties(node.right)
+    
+            # Check for both subtrees validity
+            if not left_valid or not right_valid:
+                return 0, False
+    
+            # Rule 4: Both sides must have the same black height
+            if left_black_height != right_black_height:
+                return 0, False
+    
+            # Rule 3: Red nodes cannot have red children
+            if node.color == "red":
+                if (node.left and node.left.color == "red") or (node.right and node.right.color == "red"):
+                    return 0, False
+    
+            # Increment the black height for black nodes
+            return (left_black_height + 1 if node.color == "black" else left_black_height), True
+    
+        # Rule 2: The root must be black
+        if self.root and self.root.color != "black":
+            return False
+    
+        # Validate all other properties
+        _, is_valid_tree = check_properties(self.root)
+        return is_valid_tree
+        
+        
