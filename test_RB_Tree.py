@@ -73,20 +73,50 @@ class TestRBTree(unittest.TestCase):
     def test_preorder_traversal(self):
         """ Test the preorder traversal method """
         self.populate_tree()
-        print("\nPreorder Traversal:")
-        self.tree.preorder()  # self check: Ensure values are printed in correct traversal order
+        expected_preorder = [20, 15, 10, 5, 1, 25, 30, 35]
+        result = []
+
+        def collect_values(node):
+            if not node:
+                return
+            result.append(node.value)
+            collect_values(node.left)
+            collect_values(node.right)
+
+        collect_values(self.tree.root)
+        self.assertEqual(result, expected_preorder, "Preorder traversal does not match expected result")
 
     def test_inorder_traversal(self):
         """ Test the inorder traversal method """
         self.populate_tree()
-        print("\nInorder Traversal:")
-        self.tree.inorder()  # Primitive check: Ensure values are printed in sorted order
+        expected_inorder = sorted(self.values)  # In-order should be sorted
+        result = []
+
+        def collect_values(node):
+            if not node:
+                return
+            collect_values(node.left)
+            result.append(node.value)
+            collect_values(node.right)
+
+        collect_values(self.tree.root)
+        self.assertEqual(result, expected_inorder, "Inorder traversal does not match expected result")
 
     def test_postorder_traversal(self):
         """ Test the postorder traversal method """
         self.populate_tree()
-        print("\nPostorder Traversal:")
-        self.tree.postorder()  # Primitive check: Ensure values are printed in correct postorder
+        expected_postorder = [1, 5, 10, 15, 35, 30, 25, 20]
+        result = []
+
+        def collect_values(node):
+            if not node:
+                return
+            collect_values(node.left)
+            collect_values(node.right)
+            result.append(node.value)
+
+        collect_values(self.tree.root)
+        self.assertEqual(result, expected_postorder, "Postorder traversal does not match expected result")
 
     def test_clear_tree(self):
         """ Test the clear method """
@@ -94,12 +124,6 @@ class TestRBTree(unittest.TestCase):
         self.tree.clear()
         self.assertIsNone(self.tree.root, "Tree root should be None after clearing")
         self.assertEqual(self.tree.count_nodes(), 0, "Tree should have 0 nodes after clearing")
-
-    def test_visualize(self):
-        """ Test the visualize method to ensure graph generation works without errors """
-        self.populate_tree()
-        self.tree.visualize("rb_tree_test")
-        # Ensure visualization is generated (manual verification required)
 
     def test_delete_leaf_node(self):
         """ Test deletion of a leaf node """
@@ -197,6 +221,31 @@ class TestRBTree(unittest.TestCase):
         # Ensure the tree is empty after all deletions
         self.assertIsNone(self.tree.root, "Tree should be empty after deleting all nodes")
         self.assertEqual(self.tree.count_nodes(), 0, "Tree should have 0 nodes after deleting all nodes")
+
+    def test_delete_causes_rotation(self):
+        """ Test if deletion properly handles Red-Black Tree balancing with rotations """
+        self.tree.insert(10)
+        self.tree.insert(5)
+        self.tree.insert(20)
+        self.tree.insert(1)
+        self.tree.insert(6)  # Force imbalance
+
+        self.tree.delete(1)  # Trigger rotation/recoloring
+        self.assertTrue(self.tree.is_valid(), "Tree should remain balanced after deletion")
+
+    def test_is_valid(self):
+        """ Test the validity of the Red-Black Tree """
+        self.populate_tree()
+        self.assertTrue(self.tree.is_valid(), "Tree should be valid after inserting initial values")
+
+        # Artificially break Red-Black Tree properties
+        node_10 = self.tree.search(10)
+        node_10.color = "red"
+        child_5 = self.tree.search(5)
+        if child_5:
+            child_5.color = "red"  # Two consecutive red nodes (property violation)
+
+        self.assertFalse(self.tree.is_valid(), "Tree should be invalid after breaking Red-Black properties")
 
 
 if __name__ == "__main__":

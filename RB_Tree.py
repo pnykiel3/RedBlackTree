@@ -25,7 +25,7 @@ class Node:
     def uncle(self):
         if self.parent is None:
             return None
-        return self.parent.sibling
+        return self.parent.sibling()
 
 
 class RBTree:
@@ -158,6 +158,8 @@ class RBTree:
 
     def fix_delete(self, node):
         while node != self.root and node.color == 'black':
+            if node.parent is None:
+                break
             if node == node.parent.left:
                 sibling = node.parent.right
                 if sibling.color == 'red':
@@ -309,14 +311,7 @@ class RBTree:
 
 
     def clear(self):
-        def remove_refs(node):
-            if node:
-                remove_refs(node.left)
-                remove_refs(node.right)
-                node.left = node.right = node.parent = None
-
-        remove_refs(self.root)
-        self.root = None
+        self.root = None # Python garbage collector deletes unused objects
         print("Tree cleared.")
 
 
@@ -412,13 +407,7 @@ class RBTree:
 
         # Render the graph and save it as a PNG file
         output_path = graph.render(filename, format="png", cleanup=True)
-
-        # Automatically open the generated image
-        try:
-            os.system(f"xdg-open {output_path}")  # For Linux
-        except Exception as e:
-            print(f"Unable to open the file: {e}")
-
+        graph.view()
 
     def is_valid(self):
         """
@@ -471,5 +460,28 @@ class RBTree:
         # Validate all other properties
         _, is_valid_tree = check_properties(self.root)
         return is_valid_tree
-        
-        
+
+
+if __name__ == "__main__":
+    # Create an example Red-Black Tree
+    tree = RBTree()
+    values = [20, 15, 10, 25, 30, 5, 35, 1]
+
+    # Insert values into the tree
+    print("Inserting values into the Red-Black Tree:")
+    for value in values:
+        tree.insert(value)
+
+    # Visualize the tree
+    print("\nVisualizing the tree after insertions:")
+    tree.visualize("rb_tree_test")
+
+    # Additionally, print traversal results
+    print("\nPreorder Traversal:")
+    tree.preorder()
+
+    print("\nPostorder Traversal:")
+    tree.postorder()
+
+    print("\nInorder Traversal:")
+    tree.inorder()

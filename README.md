@@ -5,25 +5,14 @@
 
 ## **1. Wstęp**
 
-Program zrealizowany jako projekt zaliczeniowy z przedmiotu Python.
+Program zrealizowany jako projekt zaliczeniowy z przedmiotu Python. Implementuje drzewo czerwono-czarne — rodzaj zbalansowanego drzewa binarnego poszukiwań, zapewniający logarytmiczną wysokość, nawet przy wielu wstawieniach i usunięciach.
+
+Drzewo czerwono-czarne ma zastosowania w strukturach takich jak mapy, zbiory czy bazy danych.
 
 ----------
 <br>
 
-## **2. Opis problemu**
-
-Drzewa czerwono-czarne to rodzaj zrównoważonego drzewa binarnego wykorzystywanego w strukturach danych, takich jak mapy czy zbiory. Jest to szczególny przypadek drzewa binarnego poszukiwań, charakteryzujący się dodatkowymi własnościami pozwalającymi na utrzymanie wysokości drzewa w granicach logarytmicznych, nawet w przypadku dużej liczby wstawień i usunięć.
-Program implementuje podstawowe operacje na drzewie czerwono-czarnym, takie jak:
-1. Wstawianie elementów (z zapewnieniem równowagi drzewa).
-2. Usuwanie elementów (z korekcją równowagi drzewa).
-3. Przeglądanie drzewa w różnych porządkach (preorder, inorder i postorder).
-4. Wizualizacja drzewa w formie graficznej.
-5. Walidacja, czy drzewo spełnia właściwości drzewa czerwono-czarnego.
-
-----------
-<br>
-
-## **3. Właściwości drzewa czerwono-czarnego**
+## **2. Właściwości drzewa czerwono-czarnego**
 
 Drzewa czerwono-czarne zdefiniowane są przez następujące reguły:
 1. Każdy węzeł jest albo czerwony, albo czarny.
@@ -32,6 +21,21 @@ Drzewa czerwono-czarne zdefiniowane są przez następujące reguły:
 4. Każda ścieżka od korzenia (ROOT) do "pustego liścia" (NULL) zawiera tę samą liczbę czarnych węzłów.
 
 Powyższe reguły pozwalają na utrzymanie logarytmicznej wysokości drzewa i efektywność operacji wstawiania, usuwania i wyszukiwania.
+
+----------
+<br>
+
+## **3. Kluczowe operacje drzewa**
+
+Program implementuje następujące funkcjonalności:
+1. **Wstawianie elementów** z automatycznym zachowaniem własności drzewa czerwono-czarnego.
+2. **Usuwanie elementów** z zachowaniem struktury drzewa.
+3. **Wyszukiwanie elementów** w drzewie.
+4. **Przeglądanie drzewa** w różnych porządkach (inorder, preorder, postorder).
+5. **Walidacja drzewa**, sprawdzająca zgodność z regułami drzewa czerwono-czarnego.
+6. **Wizualizacja drzewa** w formie grafu zapisującego się jako plik graficzny (PNG).
+7. **Obliczanie wysokości** drzewa oraz liczby węzłów.
+8. **Czyszczenie drzewa**.
 
 ----------
 <br>
@@ -49,7 +53,7 @@ Aplikacja składa się z dwóch podstawowych klas:
 
 Pniższy rozdział zawiera krótkie przedstawienie najistotniejszych operacji wraz z najciekawszymi fragmentami kodu
 
-### **Wstawianie (Insert)**
+### **Wstawianie elementów (Insert)**
 Wstawianie nowego elementu do drzewa czerwono-czarnego przebiega w dwóch etapach:
 1. **Dodanie węzła** zgodnie z metodą wstawiania w drzewie binarnym. Nowy węzeł domyślnie jest czerwony:
 ``` python
@@ -87,8 +91,10 @@ def fix_insert(self, node):
     self.root.color = 'black'
 ```
 
-### **Usuwanie (Delete)**
-Usunięcie węzła może prowadzić do naruszenia reguł drzewa czerwono-czarnego, w szczególności w przypadku węzłów czarnych. Aby zachować równowagę, stosuje się rekolorowanie i rotacje:
+### **Usuwanie elementów (Delete)**
+Usunięcie węzła może prowadzić do naruszenia struktury drzewa. W takim przypadku stosuje się mechanizmy naprawcze, takie jak "podwójna czerń" (double black).
+
+Przykładowy fragment:
 ``` python
 def delete(self, value):
     node = self.search(value)
@@ -97,199 +103,174 @@ def delete(self, value):
         return
     self.delete_node(node)
     print(f"Deleted {value} from the tree.")
+    
+...
+
+# Fragment obsługi podwójnej czerni
+while node != self.root and node.color == 'black':
+    if node == node.parent.left:
+        sibling = node.parent.right
+        if sibling.color == 'red':
+            sibling.color = 'black'
+            node.parent.color = 'red'
+            self.left_rotate(node.parent)
+        # Inne przypadki dla rodzeństwa czarnego
+    node.color = 'black'
 ```
 Operacja usuwania obejmuje:
 1. Znalezienie węzła do usunięcia.
 2. Usunięcie go z drzewa.
-3. Naprawę problemów związanych z "podwójną czernią" (double-black), jeżeli trafi ona na ścieżkę po usunięciu węzła.
+3. Naprawę problemów.
 
 
-### **Wczytywanie danych**
+### **Wizualizacja drzewa**
+Metoda wizualizuje strukturę drzewa w formie grafu przy użyciu biblioteki `graphviz`. Każdy węzeł jest oznaczony kolorem odpowiadającym jego kolorowi w drzewie.
 
-```java
-/**
-* Pobiera od użytownika wielkość grafu 
-* i tworzy graf o podanych zależnościach.
-*/
-private static Graph getGraph() {
-  Scanner scanner = new Scanner(System.in);
-  int vaultsNumber = scanner.nextInt();
-  Graph graph = new Graph(vaultsNumber, false);
+```python
+def visualize(self, filename="red_black_tree"):
+    def add_edges(graph, node):
+        if not node:
+            return
+        color = "black" if node.color == "black" else "red"
+        graph.node(str(node.value), str(node.value),
+                   fillcolor=color, style="filled", fontcolor="white")
+        if node.left:
+            graph.edge(str(node.value), str(node.left.value))
+            add_edges(graph, node.left)
+        if node.right:
+            graph.edge(str(node.value), str(node.right.value))
+            add_edges(graph, node.right)
+
+    graph = Digraph(comment="Red-Black Tree")
+    graph.attr("node", shape="circle", fontcolor="white", style="filled")
+    if self.root:
+        add_edges(graph, self.root)
+    graph.render(filename, format="png", cleanup=True)
 ```
-Na początku tworzę skaner który wczytuje z wejścia standardowego liczbę skarbonek. Tworzę też graf nieskierowany o 
-ilości wierzchołków równej ilości skarbonek.
 
-```java
-  for (int i = 0; i < vaultsNumber; i++) {
-     graph.addEdge(i, scanner.nextInt() - 1);
-  }
-  return graph;
-}
+### **Walidacja drzewa**
+Metoda sprawdza, czy drzewo spełnia wszystkie zasady drzewa czerwono-czarnego.
+Zawiera rekurencyjną metodę check_properties, która sprawdza każdy węzeł.
+
+```python
+def is_valid(self):
+    
+    def check_properties(node):
+           
+        if node is None:  # Base case: Every NULL leaf has black height 1
+            return 1, True
+    
+        left_black_height, left_valid = check_properties(node.left)
+        right_black_height, right_valid = check_properties(node.right)
+    
+        # Check for both subtrees validity
+        if not left_valid or not right_valid:
+            return 0, False
+    
+        # Rule 4: Both sides must have the same black height
+        if left_black_height != right_black_height:
+            return 0, False
+    
+        # Rule 3: Red nodes cannot have red children
+        if node.color == "red":
+            if (node.left and node.left.color == "red") or (node.right and node.right.color == "red"):
+                return 0, False
+    
+        # Increment the black height for black nodes
+        return (left_black_height + 1 if node.color == "black" else left_black_height), True
+    
+    # Rule 2: The root must be black
+    if self.root and self.root.color != "black":
+        return False
+    
+    # Validate all other properties
+    _, is_valid_tree = check_properties(self.root)
+    return is_valid_tree
 ```
-Następnie wczytuję krawędzie według schematu opisanego w **Interpretacja problemu**, z modyfikacją polegającą na 
-przesunięciu numerówm skarbonek i kluczy aby były od 0 do `n-1` ponieważ tak reprezentowany jest graf.
 
-### **Zliczanie składowych grafu**
+### **Obliczanie własności drzewa**
+Metody pozwalają na rekurencyjne obliczanie wysokości drzewa i liczby węzłów:
 
-```java
-/**
- * Zlicza ilość składowych grafu wykorzystując algorytm dfs.
- */
-public int countComponents() {
-  int numberOfComponents = 0;
-  boolean[] visited = new boolean[numberOfVertices];
+```python
+def height(self, node=None):
+    if node is None:
+        node = self.root
+    if node is None:
+        return -1
+    return 1 + max(self.height(node.left), self.height(node.right))
+
+def count_nodes(self, node=None):
+    if node is None:
+        node = self.root
+    if node is None:
+        return 0
+    return 1 + self.count_nodes(node.left) + self.count_nodes(node.right)
 ```
-Na początku tworzę tablicę ustawioną na wartość `false` która będzie służyła do oznaczania które wierzchołki już 
-odwiedziłem.
-
-```java
-  for (int i = 0; i < numberOfVertices; i++) {
-    if (!visited[i]) {
-        numberOfComponents++;
-        dfs1(selectVertex(i), visited);
-    }
-  }
-  return numberOfComponents;
-}
-```
-Następnie przechodzię po kolei przez tablicę i sprawdzam czy któryś wierzchołek nie został jescze odwiedzony. Jeśli 
-taki znajdę uruchamiam na nim funkcję przeszukiwania grafu `dfs1`, jednocześnie zwiększając licznik składowych.
-
-### **Przeszukiwanie grafu w głąd (DFS)**
-
-```java
-/**
- * Funkcja realizująca algorytm DFS przeglądania grafu.
- */
-private void dfs1(Vertex v, boolean[] visited) {
-  int vertex = v.Number();
-  visited[vertex] = true;
-  Iterator<Edge> iterator = EmanatingEdgesIter(vertex);
-```
-Na początku oznaczam obecny wierzchołek jako odwiedzony i pobieram iterator który zwraca wierzchołki wychodzące z 
-danego wierzchołka.
-
-```java
-  while (!iterator.isDone()) {
-    Vertex x = iterator.getElement().V1();
-    if (!visited[x.Number()]) {
-      dfs1(x, visited);
-    }
-    iterator.next();
-  }
-}
-```
-Jeśli któryś z wychodzących wierzchołków nie został wcześniej odwiedzony to uruchamiam na nim ponownie algorytm DFS.
 
 ----------
 <br>
 
-## **6. Opis struktur danych**
-
-Graf jest to struktóra składająca się z wierzchołów i krawędzi które łączą wierzchoki. Jeśli jakieś wierzchołki są 
-ze sobą połączone krawędzią to są one sąsiadami.
-<br><br>
-W rozwiązaniu wykorzystałem graf nieskierowany czyli graf którego krawędzie są dwuelementowymi podzbiorami zbioru 
-wierzchołków, czyli upraszczając krawędzie nie mają kierunków.
-<br><br>
-Grafy możemy reprezentować przy użyciu:
-* Macierzy sąsiedztwa
-* Listy sąsiedztwa
-* Macierzy incydencji
-
-W zadaniu graf z któego korzystałem reprezentowany był z użyciem macierzy sąsiedztwa. Jest to macierz kwadratowa `n` na 
-`n`, gdzie `n` jest ilością wierzchołków, w której wartość na przeciąciu `i`-tego wiersza i `j`-tej kolumny 
-reprezentuje istnitnie krawędzi miedzy wierzchłkiem `i` oraz `j`.
-<br><br>
-Do poruszania się po grafie wykorzystywałem wzorzec projektowy iterator który pozwala na sekwencyjne odwiedzanie 
-elementów jakiejś większej kolekcji bez potrzeby eksponowania jej formy.
-
-----------
-<br>
-
-## **7. Złożoność struktur danych**
+## **6. Złożoność implementacji**
 
 ### **Złożoność pamięciowa**
 
-Do przechowania `n`-wierzchołkowego grafu z użuciem macierzy sąsiedztwa potrzebujemy tablicę `n` na `n`. W programie 
-przechowujemy też `n` wierzchołków więc potrzebujemy tablicy `n` elementowej. Liczby te są stałe więc złożoność 
-pamięciowa jest równa O(n^2 + n) = O(n^2).
+Drzewo czerwono-czarne wymaga przechowywania następujących informacji dla każdego węzła:
+ - Wartość węzła (klucz).
+ - Kolor węzła (czerwony lub czarny).
+ - Wskaźniki na rodzica, lewe i prawe dziecko.
 
+Całkowita pamięć zajmowana przez drzewo to **O(n)**, gdzie n to liczba węzłów.
 ### **Złożoność czasowa**
 
-1. Utworzenie grafu<br>
-   Aby utworzyć graf potrzebujemy utworzyć macierz `n` na `n` i wypełnić ją `null`-ami oraz stworzyć `n` wierzchołków. 
-   Złożoność czasowa wynosi więc O(n^2 + n) = O(n^2).
-2. Dodanie krawędzi<br>
-   Utworzenie krawędzi i wstawienie jej do macierzy sąsiedztwa wykonujemy w czasie stałym. Złożoność czasowa wynosi 
-   więc O(1). 
-3. Pobranie wierzchołka<br>
-   Pobranie wierzchołka wykonujemy w czasie stałym. Złożoność czasowa wynosi więc O(1).
-4. Pobranie krawędzi<br>
-   Pobranie wierzchołka wykonujemy w czasie stałym. Złożoność czasowa wynosi więc O(1).
-5. Wyczyszczenie grafu<br>
-   Usunięcie zawartości grafu to przejście przez całą macierz sąsiedztwa i ustawienie w każdej komórce `null`-a. 
-   Złożoność czasowa wynosi więc O(n^2).
-6. Iterator po wierzchołkach<br>
-   Przejście przez wszystkie wierzchołki to przejście przez `n` elementową tablicę. Złożoność czasowa wynosi więc O(n).
-7. Iterator po krawędziach wchodzących<br>
-   Aby przejść przez wszystkie krawędzie wychodzące wierzchołka trzeba przejść przez całą kolumnę macierzy. Złożoność 
-   czasowa wynosi więc O(n).
-8. Iterator po krawędziach wychodzących<br>
-   Aby przejść przez wszystkie krawędzie wychodzące wierzchołka trzeba przejść przez cały wiersz macierzy. Złożoność czasowa wynosi więc O(n).
-9. Iterator po wszystkich krawędziach<br>
-   Przejście przez wszystkie krawędzie to przejście przez całą macierz sąsiedztwa. Złożoność czasowa wynosi więc O(n^2).
+#### Wstawianie
+
+Złożoność czasowa to **O(log n)**. Proces obejmuje:
+- Znalezienie odpowiedniego miejsca dla nowego węzła (O(log n)).
+- Naprawę drzewa za pomocą rekolorowania i rotacji (maksymalnie O(log n)).
+
+#### Usuwanie
+
+Złożoność czasowa to **O(log n)**. Proces obejmuje:
+- Znalezienie i usunięcie węzła (O(log n)).
+- Naprawę potencjalnych naruszeń drzewa (O(log n)).
+
+#### Wyszukiwanie
+Złożoność czasowa to **O(log n)**, wynikająca z wysokości drzewa.
+- Przeglądanie drzewa
+- Przeglądanie w dowolnym porządku (inorder, preorder, postorder) ma złożoność O(n), ponieważ każdy węzeł jest odwiedzany raz.
+
+#### Walidacja drzewa
+Złożoność to **O(n)**, ponieważ każdy węzeł musi zostać sprawdzony pod kątem zgodności z zasadami drzewa czerwono-czarnego.
+<br>
 
 ----------
 <br>
 
-## **8. Złożoność algorytmów**
-
-### **Złożoność pamięciowa**
-
-Do działania algorytmu DFS potrzebna jest nam tablica zawierająca `n` pól odpowiadajacych informacji czy dany 
-wierzchołek został oznaczony. Liczba ta jest stała więc złożoność pamięciowa jest równa O(n).
-
-### **Złożoność czasowa**
-
-Algorytm DFS potrzebuje przejść przez cały wiersz o długości `n` aby odkryć wszystkie krawędzie wychodzące z 
-pojedynczego wierzchołka. Mamy `n` wierzchołków. Złożoność czasowa wynosi więc O(n^2).
+## **7. Sposób uruchomienia**
+1. Zainstaluj bibliotekę `graphviz`,  za pomocą:<br>
+`pip install graphvix`
+2. Uruchom program testujący:<br>
+`python test_RB_Tree.py` lub `python3 test_RB_Tree.py`<br>
 
 ----------
 <br>
 
-## **9. Sposób uruchomienia**
-1. Przejść do katalogu `src`
-2. Skompilować kod:<br>
-`javac App.java Graph.java Edge.java Vertex.java Iterator.java Visitor.java CountingVisitor.java`<br>
-3. Uruchomić program:<br>
-`java App`<br>
+## **8. Literatura**
 
-Następnie podajemy ilość skarbonek. A potem kolejno wpisujemy w której skarbonce znajduje się obecny klucz np.:
-```text
-Podaj liczbę skarbonek
-4
-Podaj rozmieszczenie kluczy i skarbonek
-2
-1
-2
-4
-```
-
-----------
+Strona Pana Profesora Kapanowskiego: <br>
+https://ufkapano.github.io/ <br>
+oraz<br>
+https://en.wikipedia.org/wiki/Red-black_tree
 <br>
-
-## **10. Literatura**
-
-https://pl.wikipedia.org/wiki/Spójna_składowa_grafu
+https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree
 <br>
-https://pl.wikipedia.org/wiki/Przeszukiwanie_w_głąb
+https://en.wikipedia.org/wiki/Binary_search_tree
 <br>
-Slajdy z wykładu i ćwiczeń.
+https://graphviz.org/documentation/
 
 ----------
 <br>
 
 ## **11. Wymagania**
 
-**Java** - testowane na wersji **11**<br>
+**Python** - testowane na wersji **3.11**<br>
