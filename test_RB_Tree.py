@@ -73,7 +73,7 @@ class TestRBTree(unittest.TestCase):
     def test_preorder_traversal(self):
         """ Test the preorder traversal method """
         self.populate_tree()
-        expected_preorder = [20, 15, 10, 5, 1, 25, 30, 35]
+        expected_preorder = [15, 5, 1, 10, 25, 20, 30, 35]
         result = []
 
         def collect_values(node):
@@ -105,7 +105,7 @@ class TestRBTree(unittest.TestCase):
     def test_postorder_traversal(self):
         """ Test the postorder traversal method """
         self.populate_tree()
-        expected_postorder = [1, 5, 10, 15, 35, 30, 25, 20]
+        expected_postorder = [1, 10, 5, 20, 35, 30, 25, 15]
         result = []
 
         def collect_values(node):
