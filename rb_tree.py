@@ -82,14 +82,14 @@ class RBTree:
             self.root.color = 'black'
         else:
             # Attempt to insert the new node
-            inserted = self.insert_node(self.root, new)
+            inserted = self.__insert_node(self.root, new)
 
             # Only apply fix if the node was actually inserted (not a duplicate)
             if inserted:
-                self.fix_insert(new)
+                self.__fix_insert(new)
         print(f"Inserted {value} into the tree.")
 
-    def insert_node(self, old, new):
+    def __insert_node(self, old, new):
         """
         Recursively insert a node into the BST tree.
         Tree needs to be fixed after insertion to maintain the properties of the Red-Black Tree.
@@ -105,15 +105,15 @@ class RBTree:
                 old.left = new
                 new.parent = old
                 return True
-            return self.insert_node(old.left, new)
+            return self.__insert_node(old.left, new)
 
         if old.right is None:
             old.right = new
             new.parent = old
             return True
-        return self.insert_node(old.right, new)
+        return self.__insert_node(old.right, new)
 
-    def fix_insert(self, node):
+    def __fix_insert(self, node):
         """
         Fixes the red-black tree property violations after an insertion operation.
 
@@ -140,10 +140,10 @@ class RBTree:
                 else:
                     if node == node.parent.right:  # Case 2
                         node = node.parent
-                        self.left_rotate(node)
+                        self.__left_rotate(node)
                     node.parent.color = 'black'  # Case 3
                     grandparent.color = 'red'
-                    self.right_rotate(grandparent)
+                    self.__right_rotate(grandparent)
             else:
                 uncle = grandparent.left
                 if uncle and uncle.color == 'red':  # Case 1
@@ -154,10 +154,10 @@ class RBTree:
                 else:
                     if node == node.parent.left:  # Case 2
                         node = node.parent
-                        self.right_rotate(node)
+                        self.__right_rotate(node)
                     node.parent.color = 'black'  # Case 3
                     grandparent.color = 'red'
-                    self.left_rotate(grandparent)
+                    self.__left_rotate(grandparent)
         self.root.color = 'black'
 
     def delete(self, value):
@@ -176,10 +176,10 @@ class RBTree:
             return
 
         # Perform standard BST deletion
-        self.delete_node(node)
+        self.__delete_node(node)
         print(f"Deleted {value} from the tree.")
 
-    def delete_node(self, node):
+    def __delete_node(self, node):
         """
         Deletes a node from the tree, replacing it appropriately and maintaining tree
         balance and properties. If the node to delete has two children, its in-order
@@ -201,17 +201,17 @@ class RBTree:
 
         # Remove node and replace it with child
         if child:
-            self.replace_node(node, child)
+            self.__replace_node(node, child)
             if node.color == 'black':
-                self.fix_delete(child)
+                self.__fix_delete(child)
         elif node.color == 'black':
             # Fix double-black case
-            self.fix_delete(node)
-            self.replace_node(node, None)
+            self.__fix_delete(node)
+            self.__replace_node(node, None)
         else:
-            self.replace_node(node, None)
+            self.__replace_node(node, None)
 
-    def replace_node(self, node, child):
+    def __replace_node(self, node, child):
         """
         Replaces a node in the binary tree with its child. This method updates the
         parent-child relationship of both the node being replaced and its child
@@ -232,7 +232,7 @@ class RBTree:
         if child:
             child.parent = node.parent
 
-    def fix_delete(self, node):
+    def __fix_delete(self, node):
         """
         Fixes the red-black tree node properties during the delete operation.
 
@@ -253,7 +253,7 @@ class RBTree:
                 if sibling.color == 'red':
                     sibling.color = 'black'
                     node.parent.color = 'red'
-                    self.left_rotate(node.parent)
+                    self.__left_rotate(node.parent)
                     sibling = node.parent.right
                 if (not sibling.left or sibling.left.color == 'black') and \
                         (not sibling.right or sibling.right.color == 'black'):
@@ -263,19 +263,19 @@ class RBTree:
                     if not sibling.right or sibling.right.color == 'black':
                         sibling.left.color = 'black'
                         sibling.color = 'red'
-                        self.right_rotate(sibling)
+                        self.__right_rotate(sibling)
                         sibling = node.parent.right
                     sibling.color = node.parent.color
                     node.parent.color = 'black'
                     sibling.right.color = 'black'
-                    self.left_rotate(node.parent)
+                    self.__left_rotate(node.parent)
                     node = self.root
             else:
                 sibling = node.parent.left
                 if sibling.color == 'red':
                     sibling.color = 'black'
                     node.parent.color = 'red'
-                    self.right_rotate(node.parent)
+                    self.__right_rotate(node.parent)
                     sibling = node.parent.left
                 if (not sibling.left or sibling.left.color == 'black') and \
                         (not sibling.right or sibling.right.color == 'black'):
@@ -285,16 +285,16 @@ class RBTree:
                     if not sibling.left or sibling.left.color == 'black':
                         sibling.right.color = 'black'
                         sibling.color = 'red'
-                        self.left_rotate(sibling)
+                        self.__left_rotate(sibling)
                         sibling = node.parent.left
                     sibling.color = node.parent.color
                     node.parent.color = 'black'
                     sibling.left.color = 'black'
-                    self.right_rotate(node.parent)
+                    self.__right_rotate(node.parent)
                     node = self.root
         node.color = 'black'
 
-    def right_rotate(self, node):
+    def __right_rotate(self, node):
         """
         Performs a right rotation on the given node in a binary tree. This rotation updates
         the relationships between the node, its left child, and the parent nodes of both,
@@ -318,7 +318,7 @@ class RBTree:
         old_left.right = node
         node.parent = old_left
 
-    def left_rotate(self, node):
+    def __left_rotate(self, node):
         """
         Performs a left rotation on the given node within a binary tree. Updates the
         references and relationships between the node, its parent, and its right child
@@ -506,14 +506,14 @@ class RBTree:
         :return: None
         """
 
-        def traverse(node):
+        def __traverse(node):
             if not node:
                 return
             print(node.value, end=' ')
-            traverse(node.left)
-            traverse(node.right)
+            __traverse(node.left)
+            __traverse(node.right)
 
-        traverse(self.root)
+        __traverse(self.root)
         print()
 
     def postorder(self):
@@ -530,14 +530,14 @@ class RBTree:
         :return: None
         """
 
-        def traverse(node):
+        def __traverse(node):
             if not node:
                 return
-            traverse(node.left)
-            traverse(node.right)
+            __traverse(node.left)
+            __traverse(node.right)
             print(node.value, end=' ')
 
-        traverse(self.root)
+        __traverse(self.root)
         print()
 
     def inorder(self):
@@ -569,7 +569,7 @@ class RBTree:
         :return: The path of the rendered PNG file.
         """
 
-        def add_edges(graph, node):
+        def __add_edges(graph, node):
             if not node:
                 return
             color = "black" if node.color == "black" else "red"
@@ -577,15 +577,15 @@ class RBTree:
                        fillcolor=color, style="filled", fontcolor="white")
             if node.left:
                 graph.edge(str(node.value), str(node.left.value))
-                add_edges(graph, node.left)
+                __add_edges(graph, node.left)
             if node.right:
                 graph.edge(str(node.value), str(node.right.value))
-                add_edges(graph, node.right)
+                __add_edges(graph, node.right)
 
         graph = Digraph(comment="Red-Black Tree")
         graph.attr("node", shape="circle", fontcolor="white", style="filled")
         if self.root:
-            add_edges(graph, self.root)
+            __add_edges(graph, self.root)
 
         # Render the graph and save it as a PNG file
         graph.render(filename, format="png", cleanup=True)
@@ -597,7 +597,7 @@ class RBTree:
         :return: True if valid, False otherwise.
         """
 
-        def check_properties(node):
+        def __check_properties(node):
             """
             Check if the tree rooted at the given node satisfies Red-Black Tree properties:
             1. A node is either red or black.
@@ -615,8 +615,8 @@ class RBTree:
             if node is None:  # Base case: Every NULL leaf has black height 1
                 return 1, True
 
-            left_black_height, left_valid = check_properties(node.left)
-            right_black_height, right_valid = check_properties(node.right)
+            left_black_height, left_valid = __check_properties(node.left)
+            right_black_height, right_valid = __check_properties(node.right)
 
             # Check for both subtrees validity
             if not left_valid or not right_valid:
@@ -640,7 +640,7 @@ class RBTree:
             return False
 
         # Validate all other properties
-        _, is_valid_tree = check_properties(self.root)
+        _, is_valid_tree = __check_properties(self.root)
         return is_valid_tree
 
 

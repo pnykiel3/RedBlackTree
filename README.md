@@ -56,41 +56,42 @@ Poniższy rozdział zawiera krótkie przedstawienie najistotniejszych operacji w
 ### **Wstawianie elementów (Insert)**
 Wstawianie nowego elementu do drzewa czerwono-czarnego przebiega w dwóch etapach:
 1. **Dodanie węzła** zgodnie z metodą wstawiania w drzewie binarnym. Nowy węzeł domyślnie jest czerwony:
+
 ```python
 def insert(self, value):
-    new = Node(value)
-    if self.root is None:  # Jeśli drzewo jest puste, nowy węzeł staje się korzeniem
-        self.root = new
-        self.root.color = 'black'
-    else:
-        inserted = self.insert_node(self.root, new)  # Rekurencyjna metoda wstawiania nowego węzła do drzewa BST
-        if inserted:
-            self.fix_insert(new)  # Naprawa struktury drzewa
+   new = Node(value)
+   if self.root is None:  # Jeśli drzewo jest puste, nowy węzeł staje się korzeniem
+      self.root = new
+      self.root.color = 'black'
+   else:
+      inserted = self.__insert_node(self.root, new)  # Rekurencyjna metoda wstawiania nowego węzła do drzewa BST
+      if inserted:
+         self.__fix_insert(new)  # Naprawa struktury drzewa
 ```
 2. **Naprawa drzewa** po wstawieniu wywoływana jest metoda, która koryguje potencjalne naruszenia reguł drzewa czerwono-czarnego. Wykorzystuje rotacje i zmiany kolorów:
 
 ```python
 def fix_insert(self, node):
-    while node != self.root and node.parent.color == 'red':
-        grandparent = node.grandparent()
-        if node.parent == grandparent.left:
-            uncle = grandparent.right
-            if uncle and uncle.color == 'red':  # Przypadek 1: Wujek jest czerwony
-                node.parent.color = 'black'
-                uncle.color = 'black'
-                grandparent.color = 'red'
-                node = grandparent
-            else:
-                if node == node.parent.right:  # Przypadek 2: Rotacja w lewo
-                    node = node.parent
-                    self.left_rotate(node)
-                node.parent.color = 'black'  # Przypadek 3: Rekolorowanie i rotacja
-                grandparent.color = 'red'
-                self.right_rotate(grandparent)
-        else:
-            ...
-            # Analogiczne przypadki dla rodzica będącego prawym dzieckiem
-    self.root.color = 'black'
+   while node != self.root and node.parent.color == 'red':
+      grandparent = node.grandparent()
+      if node.parent == grandparent.left:
+         uncle = grandparent.right
+         if uncle and uncle.color == 'red':  # Przypadek 1: Wujek jest czerwony
+            node.parent.color = 'black'
+            uncle.color = 'black'
+            grandparent.color = 'red'
+            node = grandparent
+         else:
+            if node == node.parent.right:  # Przypadek 2: Rotacja w lewo
+               node = node.parent
+               self.__left_rotate(node)
+            node.parent.color = 'black'  # Przypadek 3: Rekolorowanie i rotacja
+            grandparent.color = 'red'
+            self.__right_rotate(grandparent)
+      else:
+         ...
+         # Analogiczne przypadki dla rodzica będącego prawym dzieckiem
+   self.root.color = 'black'
 ```
 
 ### **Wizualizacja drzewa**
@@ -127,16 +128,16 @@ Przykładowa wizualizacja drzewa zadanego w main `RB_Tree.py`
 
 ## **6. Złożoność implementacji**
 
-### **Złożoność czasowa**
+### Złożoność czasowa i pamięciowa
 
-#### Wstawianie
-
-Złożoność czasowa to **O(log n)**. Proces obejmuje:
-- Znalezienie odpowiedniego miejsca dla nowego węzła (O(log n)).
-- Naprawę drzewa za pomocą rekolorowania i rotacji (maksymalnie O(log n)).
-
-#### Walidacja drzewa
-Złożoność to **O(n)**, ponieważ każdy węzeł musi zostać sprawdzony pod kątem zgodności z zasadami drzewa czerwono-czarnego.
+| Operacja            | Złożoność czasowa | Złożoność pamięciowa |
+|---------------------|-------------------|-----------------------|
+| Wstawianie (Insert) | O(log n)         | O(1)                 |
+| Usuwanie (Delete)   | O(log n)         | O(1)                 |
+| Wyszukiwanie        | O(log n)         | O(1)                 |
+| Minimum/Maximum     | O(log n)         | O(1)                 |
+| Następnik/Poprzednik| O(log n)         | O(1)                 |
+| Całe drzewo         | -                | O(n)                 |
 
 <br>
 ----------
@@ -156,13 +157,12 @@ Złożoność to **O(n)**, ponieważ każdy węzeł musi zostać sprawdzony pod 
 
 ## **8. Literatura**
 
-Strona Pana Profesora Kapanowskiego:  
-https://ufkapano.github.io/  
+Strona prof. Kapanowskiego: [ufkapano.github.io](https://ufkapano.github.io/) <br>
 oraz:  
-- https://en.wikipedia.org/wiki/Red-black_tree  
-- https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree  
-- https://en.wikipedia.org/wiki/Binary_search_tree  
-- https://graphviz.org/documentation/
+- [Red Black Tree](https://en.wikipedia.org/wiki/Red-black_tree)
+- [Self balancing BST](https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree)
+- [Binary Search Tree](https://en.wikipedia.org/wiki/Binary_search_tree)
+- [Graphviz](https://graphviz.org/documentation/)
 
 ----------
 

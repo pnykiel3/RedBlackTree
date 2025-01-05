@@ -61,6 +61,7 @@ def test_is_valid():
     assert tree.root.right.right.right.left.value == 1918
     assert tree.root.right.right.right.left.color == "red"
     assert tree.is_valid() is True, "Tree is invalid after insertion"
+    tree.visualize()
 
 def test_search():
     """ Test the search method """
