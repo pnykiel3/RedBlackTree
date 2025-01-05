@@ -1,6 +1,4 @@
 import pytest
-import io
-import sys
 from RB_Tree import RBTree
 
 
@@ -63,7 +61,6 @@ def test_is_valid():
     assert tree.root.right.right.right.left.color == "red"
     assert tree.is_valid() is True, "Tree is invalid after insertion"
 
-
 def test_search():
     """ Test the search method """
     tree = set_up()
@@ -76,19 +73,11 @@ def test_search():
     assert tree.search(2025) is None
     assert tree.search(0) is None
 
-def test_insert_and_traversal():
-    """ Test the insert and traversal
-    (inorder, preorder, postorder) methods """
+def test_insert_and_traversal(capsys):
+    """ Test the insert and traversal (inorder, preorder, postorder) methods """
     tree = set_up()
     add_values(tree, [100, -5, 312, 511, 2, 8, 16, 100])
     assert tree.is_valid() is True
-    assert tree.search(100) is not None, "100 should be present in the tree"
-    assert tree.search(-5) is not None, "-5 should be present in the tree"
-    assert tree.search(312) is not None, "312 should be present in the tree"
-    assert tree.search(511) is not None, "511 should be present in the tree"
-    assert tree.search(2) is not None, "2 should be present in the tree"
-    assert tree.search(8) is not None, "8 should be present in the tree"
-    assert tree.search(16) is not None, "16 should be present in the tree"
 
     # Expected results
     expected_inorder = "-5 1 2 5 8 10 15 16 20 25 30 35 100 312 511 \n"
@@ -96,25 +85,22 @@ def test_insert_and_traversal():
     expected_postorder = "-5 2 1 8 10 5 16 20 30 100 511 312 35 25 15 \n"
 
     # Test Inorder
-    captured_output = io.StringIO()
-    sys.stdout = captured_output
+    _ = capsys.readouterr()
     tree.inorder()
-    sys.stdout = sys.__stdout__
-    assert captured_output.getvalue() == expected_inorder, f"Inorder failed: {captured_output.getvalue()}"
+    captured = capsys.readouterr()
+    assert captured.out == expected_inorder, f"Inorder failed: {captured.out}"
 
     # Test Preorder
-    captured_output = io.StringIO()
-    sys.stdout = captured_output
+    _ = capsys.readouterr()
     tree.preorder()
-    sys.stdout = sys.__stdout__
-    assert captured_output.getvalue() == expected_preorder, f"Preorder failed: {captured_output.getvalue()}"
+    captured = capsys.readouterr()
+    assert captured.out == expected_preorder, f"Preorder failed: {captured.out}"
 
     # Test Postorder
-    captured_output = io.StringIO()
-    sys.stdout = captured_output
+    _ = capsys.readouterr()
     tree.postorder()
-    sys.stdout = sys.__stdout__
-    assert captured_output.getvalue() == expected_postorder, f"Postorder failed: {captured_output.getvalue()}"
+    captured = capsys.readouterr()
+    assert captured.out == expected_postorder, f"Postorder failed: {captured.out}"
 
 def test_delete():
     """ Test the delete method """
