@@ -1,6 +1,5 @@
 # **Drzewa czerwono-czarne**
 
-<br>
 <div style="text-align: right"><b>Paweł Nykiel</b></div>
 
 ## **1. Wstęp**
@@ -10,7 +9,6 @@ Program zrealizowany jako projekt zaliczeniowy z przedmiotu Python. Implementuje
 Drzewo czerwono-czarne ma zastosowania w strukturach takich jak mapy, zbiory czy bazy danych.
 
 ----------
-<br>
 
 ## **2. Właściwości drzewa czerwono-czarnego**
 
@@ -23,7 +21,6 @@ Drzewa czerwono-czarne zdefiniowane są przez następujące reguły:
 Powyższe reguły pozwalają na utrzymanie logarytmicznej wysokości drzewa i efektywność operacji wstawiania, usuwania i wyszukiwania.
 
 ----------
-<br>
 
 ## **3. Kluczowe operacje drzewa**
 
@@ -38,7 +35,6 @@ Program implementuje następujące funkcjonalności:
 8. **Czyszczenie drzewa**.
 
 ----------
-<br>
 
 ## **4. Struktura programu**
 
@@ -47,7 +43,6 @@ Aplikacja składa się z dwóch podstawowych klas:
 - `RBTree` (Drzewo czerwono-czarne): Klasa zarządzająca strukturą drzewa oraz implementująca wszystkie operacje wymagane na tej strukturze.
 
 ----------
-<br>
 
 ## **5. Opis operacji**
 
@@ -122,10 +117,8 @@ def visualize(self, filename="red_black_tree"):
 Przykładowa wizualizacja drzewa zadanego w main `RB_Tree.py`
    
    ![Drzewo czerwono-czarne](./rb_tree_test.png)
-   
-----------
-<br>
 
+----------
 ## **6. Złożoność implementacji**
 
 ### Złożoność czasowa i pamięciowa
@@ -139,9 +132,7 @@ Przykładowa wizualizacja drzewa zadanego w main `RB_Tree.py`
 | Następnik/Poprzednik| O(log n)         | O(1)                 |
 | Całe drzewo         | -                | O(n)                 |
 
-<br>
 ----------
-
 ## **7. Sposób uruchomienia**
 1. Zainstaluj bibliotekę `graphviz`, za pomocą:
    ```bash
