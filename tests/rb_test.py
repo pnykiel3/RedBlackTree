@@ -1,5 +1,5 @@
-import pytest
-from RB_Tree import RBTree
+""" Red Black Tree Unit Tests"""
+from rb_tree import RBTree
 
 
 def set_up():
@@ -10,6 +10,7 @@ def set_up():
     return tree
 
 def add_values(tree, values):
+    """ Insert a list of values into the given Red-Black Tree. """
     for value in values:
         tree.insert(value)
 
@@ -136,14 +137,18 @@ def test_successor_and_predecessor():
     """ Test the successor and predecessor methods """
     tree = set_up()
     assert tree.is_valid() is True, "Tree is invalid after setup"
-    assert tree.successor(tree.minimum()).value == 5, f"successor() failed: Expected 5, got {tree.successor(tree.minimum()).value}"
-    assert tree.predecessor(tree.maximum()).value == 30, f"predecessor() failed: Expected 30, got {tree.predecessor(tree.maximum()).value}"
+    assert tree.successor(tree.minimum()).value == 5, \
+        f"successor() failed: Expected 5, got {tree.successor(tree.minimum()).value}"
+    assert tree.predecessor(tree.maximum()).value == 30, \
+        f"predecessor() failed: Expected 30, got {tree.predecessor(tree.maximum()).value}"
     tree.delete(1)
     assert tree.is_valid() is True, "Tree is invalid after deletion"
-    assert tree.successor(tree.minimum()).value == 10, f"successor() failed: Expected 10, got {tree.successor(tree.minimum()).value}"
+    assert tree.successor(tree.minimum()).value == 10, \
+        f"successor() failed: Expected 10, got {tree.successor(tree.minimum()).value}"
     tree.insert(44)
     assert tree.is_valid() is True, "Tree is invalid after insertion"
-    assert tree.predecessor(tree.maximum()).value == 35, f"predecessor() failed: Expected 35, got {tree.predecessor(tree.maximum()).value}"
+    assert tree.predecessor(tree.maximum()).value == 35, \
+        f"predecessor() failed: Expected 35, got {tree.predecessor(tree.maximum()).value}"
 
 def test_height():
     """ Test the height method """
@@ -165,10 +170,14 @@ def test_count_nodes():
     tree = set_up()
     assert tree.is_valid() is True, "Tree is invalid after setup"
     assert tree.count_nodes() == 8, f"count_nodes() failed: Expected 8, got {tree.count_nodes()}"
-    assert tree.count_nodes(tree.search(5), False) == 3, f"count_nodes() failed: Expected 3, got {tree.count_nodes(5)}"
-    assert tree.count_nodes(tree.search(25), False) == 4, f"count_nodes() failed: Expected 4, got {tree.count_nodes(25)}"
-    assert tree.count_nodes(tree.search(1001), False) == 0, f"count_nodes() failed: Expected 0, got {tree.count_nodes(100)}"
-    assert tree.count_nodes(tree.search(35), False) == 1, f"count_nodes() failed: Expected 1, got {tree.count_nodes(35)}"
+    assert tree.count_nodes(tree.search(5), False) == 3, \
+        f"count_nodes() failed: Expected 3, got {tree.count_nodes(5)}"
+    assert tree.count_nodes(tree.search(25), False) == 4, \
+        f"count_nodes() failed: Expected 4, got {tree.count_nodes(25)}"
+    assert tree.count_nodes(tree.search(1001), False) == 0, \
+        f"count_nodes() failed: Expected 0, got {tree.count_nodes(100)}"
+    assert tree.count_nodes(tree.search(35), False) == 1, \
+        f"count_nodes() failed: Expected 1, got {tree.count_nodes(35)}"
     tree.delete(30)
     tree.delete(15)
     assert tree.is_valid() is True, "Tree is invalid after deletion"

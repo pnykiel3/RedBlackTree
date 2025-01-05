@@ -1,7 +1,11 @@
+"""Red Black Tree Implementation"""
 from graphviz import Digraph
 
-
 class Node:
+    """
+    Represents a node in a tree structure, with attributes for value, color, and
+    references to its parent, left child, and right child nodes.
+    """
     def __init__(self, value, color='red'):
         self.value = value
         self.color = color
@@ -54,6 +58,9 @@ class Node:
 
 
 class RBTree:
+    """
+    Red Black Tree implementation.
+    """
 
     def __init__(self):
         self.root = None
@@ -98,15 +105,13 @@ class RBTree:
                 old.left = new
                 new.parent = old
                 return True
-            else:
-                return self.insert_node(old.left, new)
-        else:
-            if old.right is None:
-                old.right = new
-                new.parent = old
-                return True
-            else:
-                return self.insert_node(old.right, new)
+            return self.insert_node(old.left, new)
+
+        if old.right is None:
+            old.right = new
+            new.parent = old
+            return True
+        return self.insert_node(old.right, new)
 
     def fix_insert(self, node):
         """
@@ -349,7 +354,7 @@ class RBTree:
             if current.value == value:  # Node found
                 print(f"Value {value} found in the tree.")
                 return current
-            elif value < current.value:  # Search in the left subtree
+            if value < current.value:  # Search in the left subtree
                 current = current.left
             else:  # Search in the right subtree
                 current = current.right
@@ -583,7 +588,7 @@ class RBTree:
             add_edges(graph, self.root)
 
         # Render the graph and save it as a PNG file
-        output_path = graph.render(filename, format="png", cleanup=True)
+        graph.render(filename, format="png", cleanup=True)
         graph.view()
 
     def is_valid(self):
@@ -598,13 +603,14 @@ class RBTree:
             1. A node is either red or black.
             2. The root is always black.
             3. Red nodes must have black children (no two consecutive red nodes).
-            4. Every path from a node to its descendant NULL nodes must have the same number of black nodes.
+            4. Every path from a node to its descendant NULL nodes
+               must have the same number of black nodes.
 
             :param node: The current node to validate.
 
             Returns:
-                (int, bool): A tuple containing the black height of the subtree and a boolean indicating
-                whether the subtree is valid.
+                (int, bool): A tuple containing the black height of the subtree
+                and a boolean indicating whether the subtree is valid.
             """
             if node is None:  # Base case: Every NULL leaf has black height 1
                 return 1, True
@@ -622,7 +628,8 @@ class RBTree:
 
             # Rule 3: Red nodes cannot have red children
             if node.color == "red":
-                if (node.left and node.left.color == "red") or (node.right and node.right.color == "red"):
+                if ((node.left and node.left.color == "red")
+                    or (node.right and node.right.color == "red")):
                     return 0, False
 
             # Increment the black height for black nodes
@@ -645,8 +652,8 @@ if __name__ == "__main__":
 
     # Insert values into the tree
     print("Inserting values into the Red-Black Tree:")
-    for value in values:
-        tree.insert(value)
+    for v in values:
+        tree.insert(v)
 
     # Visualize the tree
     print("\nVisualizing the tree after insertions:")

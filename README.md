@@ -148,7 +148,7 @@ Złożoność to **O(n)**, ponieważ każdy węzeł musi zostać sprawdzony pod 
    ```
 2. Uruchom program testujący:
    ```bash
-   cd tests/; pytest RBT_test.py
+   cd tests/; pytest rb_test.py
    ```
 
 ----------
