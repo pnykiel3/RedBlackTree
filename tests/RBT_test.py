@@ -85,19 +85,19 @@ def test_insert_and_traversal(capsys):
     expected_postorder = "-5 2 1 8 10 5 16 20 30 100 511 312 35 25 15 \n"
 
     # Test Inorder
-    _ = capsys.readouterr()
+    _ = capsys.readouterr() # Clear output
     tree.inorder()
     captured = capsys.readouterr()
     assert captured.out == expected_inorder, f"Inorder failed: {captured.out}"
 
     # Test Preorder
-    _ = capsys.readouterr()
+    _ = capsys.readouterr() # Clear output
     tree.preorder()
     captured = capsys.readouterr()
     assert captured.out == expected_preorder, f"Preorder failed: {captured.out}"
 
     # Test Postorder
-    _ = capsys.readouterr()
+    _ = capsys.readouterr() # Clear output
     tree.postorder()
     captured = capsys.readouterr()
     assert captured.out == expected_postorder, f"Postorder failed: {captured.out}"

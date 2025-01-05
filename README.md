@@ -143,12 +143,12 @@ Złożoność to **O(n)**, ponieważ każdy węzeł musi zostać sprawdzony pod 
 
 ## **7. Sposób uruchomienia**
 1. Zainstaluj bibliotekę `graphviz`, za pomocą:
-   ```
+   ```bash
    pip install graphviz
    ```
 2. Uruchom program testujący:
-   ```
-   python test_RB_Tree.py
+   ```bash
+   cd tests/; pytest RBT_test.py
    ```
 
 ----------
