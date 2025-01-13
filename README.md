@@ -160,4 +160,4 @@ oraz:
 ## **10. Wymagania**
 
 **Python** - testowane na wersji **3.11**  
-**Graphviz** - zainstalowana aplikacja oraz biblioteka Python.
+**Graphviz** - zainstalowane narzędzie oraz biblioteka Python.
