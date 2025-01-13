@@ -1,5 +1,5 @@
 """Red Black Tree Implementation"""
-from graphviz import Digraph
+from graphviz import Digraph # pylint: disable-this-line-in-some-way
 
 class Node:
     """
@@ -648,7 +648,7 @@ class RBTree:
 if __name__ == "__main__":
     # Create an example Red-Black Tree
     tree = RBTree()
-    values = [20, 15, 10, 25, 30, 5, 35, 1]
+    values = [20, 15, 10, 25, 30, 5, 35, 1000000]
 
     # Insert values into the tree
     print("Inserting values into the Red-Black Tree:")
