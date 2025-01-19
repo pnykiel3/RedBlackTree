@@ -134,13 +134,17 @@ Przykładowa wizualizacja drzewa zadanego w main `RB_Tree.py`
 
 ----------
 ## **7. Sposób uruchomienia**
-1. Zainstaluj bibliotekę `graphviz`, za pomocą:
+1. Zainstaluj wymagane biblioteki, za pomocą:
    ```bash
-   pip install graphviz
+   pip install -r requirements.txt
    ```
-2. Uruchom program testujący:
+2. Uruchom program z klasą RBTree:
    ```bash
-   cd tests/; pytest rb_test.py
+   python3 rb_tree.py
+   ```
+3. Uruchom program testujący:
+   ```bash
+   python3 rb_test.py
    ```
 
 ----------
