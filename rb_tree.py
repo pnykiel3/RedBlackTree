@@ -1,5 +1,5 @@
 """Red Black Tree Implementation"""
-from graphviz import Digraph # pylint: disable-this-line-in-some-way
+from graphviz import Digraph # pylint: disable=import-error
 
 class Node:
     """
